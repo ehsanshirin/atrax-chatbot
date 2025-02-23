@@ -2,37 +2,23 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# دیتابیس ساده از عطرها بر اساس حس و حال
-perfume_recommendations = {
-    "شاد": {"name": "Dior Joy", "link": "https://yourwebsite.com/dior-joy"},
-    "غمگین": {"name": "Tom Ford Black Orchid", "link": "https://yourwebsite.com/black-orchid"},
-    "انرژی‌بخش": {"name": "Chanel Chance", "link": "https://yourwebsite.com/chanel-chance"},
-    "آرامش‌بخش": {"name": "YSL Libre", "link": "https://yourwebsite.com/ysl-libre"},
-}
-
-@app.route("/recommend", methods=["POST"])
-
+@app.route("/")
 def home():
     return "Server is running!"
 
-
+@app.route("/recommend", methods=["POST"])  # 👈 باید روش POST در اینجا باشد
 def recommend_perfume():
-    data = request.json
-    mood = data.get("mood", "").strip()
-
-    recommendation = perfume_recommendations.get(mood, None)
+    data = request.get_json()
+    if not data or "mood" not in data:
+        return jsonify({"error": "Invalid request"}), 400
     
-    if recommendation:
-        response = {
-            "message": f"بر اساس حس و حال شما، پیشنهاد ما {recommendation['name']} است.",
-            "link": recommendation["link"]
-        }
-    else:
-        response = {
-            "message": "متأسفم، عطر مناسبی برای این حس و حال در دیتابیس ما پیدا نشد.",
-            "link": None
-        }
+    mood = data["mood"]
     
+    # پاسخ نمونه
+    response = {
+        "message": f"بهترین عطر برای حالت {mood}، عطر X است!",
+        "link": "https://yoursite.com/product/perfume-x"
+    }
     return jsonify(response)
 
 if __name__ == "__main__":
