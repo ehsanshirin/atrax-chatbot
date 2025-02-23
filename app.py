@@ -11,6 +11,11 @@ perfume_recommendations = {
 }
 
 @app.route("/recommend", methods=["POST"])
+
+def home():
+    return "Server is running!"
+
+
 def recommend_perfume():
     data = request.json
     mood = data.get("mood", "").strip()
